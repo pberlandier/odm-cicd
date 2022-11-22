@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<com.ibm.rules.studio.model.decisionservice:Deployment xmi:version="2.0" xmlns:xmi="http://www.omg.org/XMI" xmlns:com.ibm.rules.studio.model.decisionservice="http://com.ibm.rules.studio/model/decisionservice.ecore" ruleAppName="miniloan" managingXom="true">
+  <eAnnotations source="ilog.rules.custom_properties">
+    <details key="Dep_Groups" value="rtsAdministrator,rtsUser"/>
+    <details key="Dep_SnapshotCreationKind" value="ALWAYS"/>
+  </eAnnotations>
+  <name>miniloan</name>
+  <uuid>beaf8dcb-8dd0-4b71-9eff-21eb3b504133</uuid>
+  <operations operationName="assess.dop">
+    <operation href="assess.dop#e591871b-81aa-4f73-8638-6271d0c029f9"/>
+    <properties key="ruleset.bom.enabled">
+      <value><![CDATA[true]]></value>
+    </properties>
+    <properties key="ruleset.version">
+      <value><![CDATA[1.0]]></value>
+    </properties>
+    <properties key="monitoring.enabled">
+      <value><![CDATA[true]]></value>
+    </properties>
+    <properties key="ruleset.sequential.trace.enabled">
+      <value><![CDATA[true]]></value>
+    </properties>
+  </operations>
+  <versionPolicies label="Increment minor version numbers" ruleset="INCREMENT_MINOR" recurrent="true">
+    <description><![CDATA[Updates the minor version for each ruleset. Makes the new version available but retains previous versions.]]></description>
+  </versionPolicies>
+  <versionPolicies label="Use the base version numbers" default="true" recurrent="true">
+    <description><![CDATA[Uses the numbers provided in the deployment configuration. Replaces the latest version of each ruleset with this release. Used for hot fixes or development.]]></description>
+  </versionPolicies>
+  <versionPolicies label="The user can define the version numbers" ruleset="MANUAL" recurrent="true">
+    <description><![CDATA[Allows you to enter your own version numbers. Used for hot fixes or updates to an earlier release.]]></description>
+  </versionPolicies>
+</com.ibm.rules.studio.model.decisionservice:Deployment>

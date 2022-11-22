@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<classpath>
+	<classpathentry kind="src" path="src"/>
+	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/JavaSE-1.8"/>
+	<classpathentry kind="var" path="IBM_DS_HOME/executionserver/lib/javax.batch-api-ibm-1.0-patch5407.jar"/>
+	<classpathentry kind="var" path="IBM_DS_HOME/executionserver/lib/javax.inject-1.jar"/>
+	<classpathentry kind="var" path="IBM_DS_HOME/executionserver/lib/jrules-cdi-api.jar"/>
+	<classpathentry kind="var" path="ILOG_EXECUTION_SERVER_HOME/lib/jrules-res-session-java.jar"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/miniloan-xom"/>
+	<classpathentry kind="output" path="bin"/>
+</classpath>

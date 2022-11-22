@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<com.ibm.rules.studio.model.decisionservice:Operation xmi:version="2.0" xmlns:xmi="http://www.omg.org/XMI" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:com.ibm.rules.studio.model.decisionservice="http://com.ibm.rules.studio/model/decisionservice.ecore" xmlns:ilog.rules.studio.model.query.extractor="http://ilog.rules.studio/model/query/extractor.ecore" rulesetName="assess" usingRuleflow="true" ruleflowName="miniloan" targetRuleProjectName="miniloan-rules">
+  <name>assess</name>
+  <uuid>e591871b-81aa-4f73-8638-6271d0c029f9</uuid>
+  <referencedVariables variableName="borrower" variableSetName="parameters.var">
+    <variableSet href="../rules/parameters.var#a6e711b8-58ac-4020-9286-9f675c289ed0"/>
+  </referencedVariables>
+  <referencedVariables variableName="loan" variableSetName="parameters.var" direction="IN_OUT">
+    <variableSet href="../rules/parameters.var#a6e711b8-58ac-4020-9286-9f675c289ed0"/>
+  </referencedVariables>
+  <ruleflow href="../rules/miniloan.rfl#969f2211-e21e-44f0-aeeb-0c2266fa52cf"/>
+  <extractor xsi:type="ilog.rules.studio.model.query.extractor:QueryExtractor" name="assess_extractor" validator="Default Validator"/>
+  <targetRuleProject href="../../miniloan-rules#f7930131-00c9-4016-af89-ebdae653086d"/>
+</com.ibm.rules.studio.model.decisionservice:Operation>

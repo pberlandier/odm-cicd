@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?><scenarioSuiteFormat xmlns="http://schemas.ibm.com/rules/cdi/format" displayName="Scenario File - 2022-08-22_02-25-07" locale="EN" name="Scenario File - 2022-08-22_02-25-07" version="1.0" xmlns:jsl="http://xmlns.jcp.org/xml/ns/javaee" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://schemas.ibm.com/rules/cdi/format scenarioSuiteFormat_1_0.xsd ">
+	<properties>
+		<property name="dataset.name" xsi:type="stringProperty" displayName="Dataset name" editable="true">
+			<value>TestData</value>
+		</property>
+	</properties>	
+	<jobDescriptor>
+		<jsl:job id="simulation1" version="1.0" xmlns="http://xmlns.jcp.org/xml/ns/javaee">
+			<jsl:properties>
+				<jsl:property name="execution.ruleset.path" value="#{jobParameters['execution.ruleset.path']}"/>
+				<jsl:property name="execution.ruleapp.undeploy" value="#{jobParameters['execution.ruleapp.undeploy']}"/>
+				<jsl:property name="execution.flow.task" value="#{jobParameters['execution.flow.task']}"/>
+				<jsl:property name="execution.user.data" value="#{jobParameters['execution.user.data']}"/>
+				<jsl:property name="execution.estimated.scenario.count" value="1000"/>
+				<jsl:property name="execution.scenario.persistence.policy" value="All"/>
+			</jsl:properties>
+			<jsl:listeners>
+				<jsl:listener ref="com.ibm.rules.cdi.runtime.batch.listeners.JobListener"/>
+			</jsl:listeners>
+			<jsl:step id="execution1">
+				<jsl:listeners>
+					<jsl:listener ref="com.ibm.rules.cdi.runtime.batch.listeners.ScenarioReadListener"/>
+					<jsl:listener ref="com.ibm.rules.cdi.runtime.batch.listeners.ScenarioChunkListener"/>
+				</jsl:listeners>
+				<jsl:chunk item-count="100">
+					<jsl:reader ref="unittest.MiniloanTestSuiteReader">
+						<jsl:properties>
+							<jsl:property name="dataset.name" value="#{jobParameters['dataset.name']}"></jsl:property>
+						</jsl:properties>
+					</jsl:reader>
+					<jsl:processor ref="com.ibm.rules.cdi.runtime.batch.artifacts.ScenarioProcessor"/>
+					<jsl:writer ref="com.ibm.rules.cdi.runtime.batch.artifacts.ScenarioWriter"/>
+				</jsl:chunk>
+			</jsl:step>
+		</jsl:job>
+	</jobDescriptor>
+	<predicates>	    	    
+	<predicate id="Approved" name="Approved is" operand="loan.approved" operator="Equals"/>
+    </predicates>
+</scenarioSuiteFormat>

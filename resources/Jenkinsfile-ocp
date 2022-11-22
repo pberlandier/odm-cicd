@@ -1,0 +1,142 @@
+
+def DC_ENDPOINT = "https://cpd-cp4ba.itzroks-270004hvf2-rhr7pi-4b4a324f027aea19c5cbc0c3275c4656-0000.us-south.containers.appdomain.cloud/odm/decisioncenter-api/v1"
+def ANT_DIR = "C:/MyProgramFiles/ant"
+def OTA_DIR = "C:/odm-cicd/ota"
+
+def GET = 'curl --insecure -X GET -u "odmAdmin:odmAdmin" %s -H "accept: application/json"'
+def PUT = 'curl --insecure -X PUT -u "odmAdmin:odmAdmin" %s -H "accept: application/json;charset=UTF-8" -H "Content-Type: application/json;charset=UTF-8"'
+def POST = 'curl --insecure -X POST -u "odmAdmin:odmAdmin" %s -H "accept: application/json"'
+def DELETE = 'curl --insecure -X DELETE -u "odmAdmin:odmAdmin" %s -H "accept: */*"'
+
+def PROJECT_NAME = 'miniloan-rules'
+def RELEASE_NAME = 'v-next'
+def TEST_SUITE_NAME = "test-suite"
+def DEPLOYMENT_NAME = "miniloan"
+def APPROVER = "user4"
+
+def DS_ID = null
+def RL_ID = null
+
+pipeline {
+    agent any
+    stages {
+        stage ('Initialize') {
+            steps {
+                echo 'Initializing...'
+                script {
+                    //
+                    // Get the decision service id 
+                    //
+                    def DS_URL = "${DC_ENDPOINT}/decisionservices/?q=name:${PROJECT_NAME}"
+                    def DS_CURL = sprintf(GET, DS_URL)
+                    def DS_SCRIPT = "${DS_CURL} | jq -r \".elements[0].id\""
+                    DS_ID = sh(returnStdout: true, script: DS_SCRIPT).trim()
+                    if (DS_ID == null ) {
+                        error("Cannot find decision service ${PROJECT_NAME}")
+                    }
+                    echo "Retrieved decision service id: ${DS_ID}"
+                    //
+                    // Get the release id
+                    //
+                    def RL_URL = "${DC_ENDPOINT}/decisionservices/${DS_ID}/releases?q=name:${RELEASE_NAME}"
+                    def RL_CURL = sprintf(GET, RL_URL)
+                    def RL_SCRIPT = "${RL_CURL} | jq -r \".elements[0].id\""
+                    RL_ID = sh(returnStdout: true, script: RL_SCRIPT).trim()
+                    if (RL_ID == null ) {
+                        error("Cannot find release ${RELEASE_NAME}")
+                    }
+                    echo "Retrieved release id: ${RL_ID}"
+                }
+            }
+         }
+        stage('Unit Testing') {
+            steps {
+                echo 'Running unit tests...'
+                script {
+                    //
+                    // Create an ODM change activity on which tests will be performed.
+                    //
+                    def ACTIVITY_NAME = "unittests_${BUILD_TAG}"
+                    def CA_URL = "${DC_ENDPOINT}/releases/${RL_ID}/changeactivity"
+                    def CA_CURL = sprintf(PUT, CA_URL)
+                    def CA_DEF = "{\\\"name\\\": \\\"${ACTIVITY_NAME}\\\", \\\"owner\\\": \\\"${APPROVER}\\\", \\\"targetDate\\\": \\\"2024-10-01T01:00:00.000Z\\\"}"
+                    def CA_SCRIPT = "${CA_CURL} -d \"${CA_DEF}\" | jq -r \".id\""
+                    def CA_ID = sh(returnStdout: true, script: CA_SCRIPT).trim()
+                    if (CA_ID == null) {
+                        error("Cannot create validation activity ${ACTIVITY_NAME}")
+                    }
+                    //
+                    // Get the test suite id
+                    //
+                    def TEST_SUITE_URL = "\"${DC_ENDPOINT}/decisionservices/${DS_ID}/testsuites?baselineId=${CA_ID}&q=name:${TEST_SUITE_NAME}\""
+                    def TEST_SUITE_CURL = sprintf(GET, TEST_SUITE_URL)
+                    echo "Running command ${TEST_SUITE_CURL}"
+                    def TEST_SUITE_SCRIPT = "${TEST_SUITE_CURL} | jq -r \".elements[0].id\""
+                    def TEST_SUITE_ID = sh(returnStdout: true, script: TEST_SUITE_SCRIPT).trim()
+                    //
+                    // Run the test suite
+                    //
+                    def RUN_TEST_URL = "\"${DC_ENDPOINT}/testsuites/${TEST_SUITE_ID}/run?baselineId=${CA_ID}\""
+                    def RUN_TEST_SCRIPT = sprintf(POST, RUN_TEST_URL)
+                    def RUN_TEST_RESULT = sh(returnStdout: true, script: RUN_TEST_SCRIPT).trim()
+                    def RUN_TEST_RESULT_PROPS = readJSON(text: RUN_TEST_RESULT)
+                    if ( RUN_TEST_RESULT_PROPS['error'] != null ) {
+                        error(RUN_TEST_RESULT_PROPS['reason'])
+                    }
+                    def TEST_REPORT_ID = RUN_TEST_RESULT_PROPS['id']
+                    def CHECK_TEST_RESULT_PROPS = null
+                    retry (60) {
+                        //
+                        // Loop on checking for execution completion
+                        //
+                        sleep 10
+                        def TEST_REPORT_URL = "\"${DC_ENDPOINT}/testreports/${TEST_REPORT_ID}?baselineId=${CA_ID}\""
+                        def TEST_REPORT_SCRIPT = sprintf(GET, TEST_REPORT_URL)
+                        def CHECK_TEST_RESULT = sh(returnStdout: true, script: TEST_REPORT_SCRIPT ).trim()
+                        CHECK_TEST_RESULT_PROPS = readJSON(text: CHECK_TEST_RESULT)
+                        if ( CHECK_TEST_RESULT_PROPS['status'] != "COMPLETED" ) {
+                            error("Unit tests execution did not complete yet. Waiting...")
+                        }
+                    }
+                    //
+                    // Close the change activity
+                    //
+                    def CLOSE_CA_URL = "\"${DC_ENDPOINT}/activities/${CA_ID}/allowapproval\""
+                    def CLOSE_CA_SCRIPT = sprintf(POST, CLOSE_CA_URL)
+                    sh(returnStdout: true, script: CLOSE_CA_SCRIPT)
+                    //
+                    // Assess the result of the tests
+                    //
+                    if ( CHECK_TEST_RESULT_PROPS['status'] != "COMPLETED" ) {
+                        error("Unit tests execution timeout.")
+                    }
+                    if ( CHECK_TEST_RESULT_PROPS['failures'] != 0 || CHECK_TEST_RESULT_PROPS['errors'] != 0) {
+                        error("Unit tests did not pass.")
+                    }
+                }
+            }
+        }
+        stage('Deploy') {
+            steps {
+                echo 'Deploying to RES...'
+                script {
+                    //
+                    // Get the deployment id
+                    //
+                    def DEPLOYMENT_URL = "\"${DC_ENDPOINT}/decisionservices/${DS_ID}/deployments?baselineId=${RL_ID}&q=name:${DEPLOYMENT_NAME}\""
+                    def DEPLOYMENT_CURL = sprintf(GET, DEPLOYMENT_URL)
+                    def DEPLOYMENT_SCRIPT = "${DEPLOYMENT_CURL} | jq -r \".elements[0].id\""
+                    DEPLOYMENT_ID = sh(returnStdout: true, script: DEPLOYMENT_SCRIPT).trim()
+
+                    def DP_URL = "${DC_ENDPOINT}/deployments/${DEPLOYMENT_ID}/deploy"
+                    def DP_SCRIPT = sprintf(POST, DP_URL)
+                    def DEPLOY_RESULT = sh(returnStdout: true, script: DP_SCRIPT).trim()
+                    def DEPLOY_RESULT_PROPS = readJSON(text: DEPLOY_RESULT)
+                    if ( DEPLOY_RESULT_PROPS['status'] != "COMPLETED" ) {
+                        error("Deployment failed.")
+                    }
+                }
+            }
+        }
+    }
+}

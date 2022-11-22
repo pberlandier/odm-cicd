@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ilog.rules.studio.model.brl:ActionRule xmi:version="2.0" xmlns:xmi="http://www.omg.org/XMI" xmlns:ilog.rules.studio.model.brl="http://ilog.rules.studio/model/brl.ecore">
+  <name>minimum credit score</name>
+  <uuid>07dbf313-d3d3-4132-8d79-d29e4262ccaa</uuid>
+  <locale>en_US</locale>
+  <definition><![CDATA[if
+    the credit score of 'the borrower' is less than 600
+then
+    add "Credit score is below minimum" to the messages of 'the loan' ;
+    reject 'the loan';]]></definition>
+</ilog.rules.studio.model.brl:ActionRule>

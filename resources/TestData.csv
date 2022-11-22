@@ -1,0 +1,4 @@
+Scenario,Description,Name,Credit Score,Yearly Income,Amount,Duration,Yearly Interest Rate,Approved
+Declined 1,Low credit score,Joe,550,80000,500000,240,0.05,FALSE
+Declined 2,Over amount limit,Sam,820,357000,1050000,360,0.03,FALSE
+Approved 1,Approved Loan,Jim,680,80000,250000,240,0.05,TRUE

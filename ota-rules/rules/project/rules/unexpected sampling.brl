@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ilog.rules.studio.model.brl:ActionRule xmi:version="2.0" xmlns:xmi="http://www.omg.org/XMI" xmlns:ilog.rules.studio.model.brl="http://ilog.rules.studio/model/brl.ecore">
+  <name>unexpected sampling</name>
+  <uuid>b3eb1456-16d9-4881-a1f3-f847ef1ac664</uuid>
+  <locale>en_US</locale>
+  <definition><![CDATA[definitions
+	set rule to an ilr business rule in elements ;
+	set tag to an ilr rule artifact tag in the tags of rule 
+		where the name of this ilr rule artifact tag is "sampling" ;
+if
+	the value of tag is not "RUS" 
+then
+	add entry Sampling : < project, rule > to report ;
+
+	]]></definition>
+</ilog.rules.studio.model.brl:ActionRule>

@@ -1,0 +1,36 @@
+
+property loadGetterSetterAsProperties "true"
+property origin "xom:/miniloan-rules/miniloan-xom"
+property uuid "b9618be2-d47f-418a-8082-c0ea016a8a30"
+package miniloan;
+
+
+public class Borrower
+{
+    public int creditScore;
+    public string name;
+    public int yearlyIncome;
+    public Borrower();
+    public Borrower(string name, int creditScore, int yearlyIncome)
+                property "ilog.rules.engine.dataio.forConversion" "true";
+}
+
+public class Loan
+{
+    public int amount;
+    public readonly string approvalStatus
+                property "factory.ignore" "true";
+    public boolean approved
+                property "factory.ignore" "true";
+    public int duration;
+    public readonly java.util.Collection messages domain 0,* class string;
+    public double yearlyInterestRate;
+    public int yearlyRepayment;
+    public Loan();
+    public Loan(int amount, int duration, double yearlyInterestRate)
+                property "ilog.rules.engine.dataio.forConversion" "true";
+    public void addToMessages(string arg);
+    public void reject();
+    public void removeFromMessages(string arg);
+}
+

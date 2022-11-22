@@ -1,0 +1,157 @@
+
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<title>ODM Repository Analysis</title>
+<style>
+h1, h2 {
+	color: #333;
+	font-family: Verdana, Arial, sans-serif;
+}
+
+body {
+    font: normal 14px Verdana, Arial, sans-serif;
+}
+
+em {
+	color: SaddleBrown
+}
+
+ul {
+    list-style-type: square;
+}
+
+p {
+	color: #333;
+	font-family: Verdana, Arial, sans-serif;
+	font-size: 14px;
+}
+
+p.summary-head {
+	display: block;
+	margin: 0.25rem;
+	padding: 10px 1rem 10px 1rem;
+	width: 60%;
+	background: linear-gradient(#333 0%, #777 100%);
+	font-weight: bold;
+	color: white;
+	border-radius: 5px 5px 0 0;
+}
+
+p.summary-body {
+	display: block;
+	margin: 0.25rem;
+	padding: 1rem;
+	width: 60%;
+	background: #EFEFEF;
+}
+
+table {
+	color: #333;
+	font-family: Consolas, Helvetica, Arial, sans-serif;
+	font-size: 9px;
+	border-collapse: collapse;
+	border-spacing: 0;
+	width: 80%;
+}
+
+td, th {
+	border: 0 none;
+	padding: 10px;
+	height: 30px;
+}
+
+th {
+	background: linear-gradient(#333 0%, #444 100%);
+	color: #FFF;
+	font-weight: bold;
+	height: 40px;
+}
+
+td {
+	background: #FAFAFA;
+	text-align: left;
+}
+
+tr:nth-child(even) td {
+	background: #EEE;
+}
+
+tr:nth-child(odd) td {
+	background: #FDFDFD;
+}
+
+tr:first-child th:nth-child(1) {
+	border-radius: 5px 0 0 0;
+}
+
+tr:first-child th:last-child {
+	border-radius: 0 5px 0 0;
+}
+</style>
+</head>
+<body>
+	<h1>ODM Repository Analysis Result</h1>
+
+Run by <em>rtsAdmin</em> on Thursday, September 15, 2022 at 5:47 PM, against <em>http://localhost:9090/decisioncenter</em> (datasource default).
+
+	<h2>Findings Summary</h2>
+	<p>A total of 3 notable items have been found and are detailed below.</p>
+	
+	<div><p class="summary-head">Unexpected sampling value&nbsp;<span style="color:LightSkyBlue;font-size:20px">&#x1f481;</span></p></div>
+<div><p class="summary-body">The sampling value tag for rules such as <em>maximum amount</em> in project <em>miniloan-rules</em> is unexpected.  <br><br><b>1 occurence found</b></p></div>
+<br>
+<div><p class="summary-head">Flow using different algorithms&nbsp;<span style="color:LightSkyBlue;font-size:20px">&#x1f481;</span></p></div>
+<div><p class="summary-body">All the rule tasks in a given rule flow should use the same algorithm whenever possible. For example, tasks in <em>miniloan</em> from project <em>miniloan-rules</em> are using different algorithms: check whether this is needed.<br><br><b>1 occurence found</b></p></div>
+<br>
+<div><p class="summary-head">Task using Rete algorithm&nbsp;<span style="color:LightSkyBlue;font-size:20px">&#x1f481;</span></p></div>
+<div><p class="summary-body">Rete algorithm should be selected when inference is required in rule execution. Check its use is appropriate, for example in rule flow <em>miniloan</em> from project <em>miniloan-rules</em>.<br><br><b>1 occurence found</b></p></div>
+<br>
+
+
+	<h2>Findings Details</h2>
+	<p>You can copy the information below and paste it in a
+		spreadsheet to sort and filter.</p>
+	<table>
+		<tr>
+			<th>What Type</th>
+			<th>Where Found</th>
+			<th>Which Branch</th>
+			<th>Which Artifact</th>
+			<th>N/A for SaaS</th>
+<th>Recommendation</th>
+<th>Deprecation</th>
+
+		</tr>
+		<tr>
+<td>Using Different Algorithms</td>
+<td>miniloan-rules</td>
+<td>[current]</td>
+<td><a href="http://localhost:9090/teamserver/faces/explore/details.jsp?project=miniloan-rules&id=brm.Ruleflow%3A167%3A174&locale=en_US&datasource=jdbc%2FilogDataSource">miniloan</a></td>
+<td></td>
+<td>Y</td>
+<td></td>
+</tr>
+<tr>
+<td>Using Rete</td>
+<td>miniloan-rules</td>
+<td>[current]</td>
+<td><a href="http://localhost:9090/teamserver/faces/explore/details.jsp?project=miniloan-rules&id=brm.Ruleflow%3A167%3A174&locale=en_US&datasource=jdbc%2FilogDataSource">miniloan</a></td>
+<td></td>
+<td>Y</td>
+<td></td>
+</tr>
+<tr>
+<td>Sampling</td>
+<td>miniloan-rules</td>
+<td>[current]</td>
+<td><a href="http://localhost:9090/teamserver/faces/explore/details.jsp?project=miniloan-rules&id=brm.ActionRule%3A3193%3A3222&locale=en_US&datasource=jdbc%2FilogDataSource">maximum amount</a></td>
+<td></td>
+<td>Y</td>
+<td></td>
+</tr>
+
+	</table>
+
+</body>
+</html>
