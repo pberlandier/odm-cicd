@@ -438,3 +438,9 @@ When the review has been completed, approve the activity. This will trigger an e
 In the end, the set of activities that have been complete should be the following, with each activity keeping track of the steps that have been performed through the pipeline execution.
 
 ![](doc/images/Picture26.png)
+
+# License
+This project is licensed under the Apache License - see the [LICENSE](LICENSE) file for details.
+
+# Notice
+© Copyright 2022, IBM Corporation
