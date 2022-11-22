@@ -1,5 +1,9 @@
 ![](doc/images/odm-jenkins-small.png)
 
+[![GitHub release](https://img.shields.io/github/release/pberlandier/odm-cicd.svg)](https://github.com/pberlandier/odm-cicd/releases)
+![GitHub last commit](https://img.shields.io/github/last-commit/pberlandier/odm-cicd)
+[![License](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](https://opensource.org/licenses/Apache-2.0)
+
 # Setting-up a Jenkins CI/CD pipeline for ODM
 
 This asset provides a documented reference implementation of the steps involved in setting-up a CI/CD pipeline for ODM decision services. It is showcasing different types of interactions between the pipeline and ODM using REST API, a Jenkins script for traditional and OCP deployments, and a detailed demo scenario.
